@@ -1,0 +1,36 @@
+{
+  "system": "Blockchain-Based Student Certificate Verification System",
+  "contract": "CertificateVerification.sol",
+  "samples": [
+    {
+      "certificateId": "CERT-2025-CS-1001",
+      "studentName": "Rahul Sharma",
+      "studentId": "CS2022045",
+      "course": "B.Tech Computer Science and Engineering",
+      "collegeName": "National Institute of Technology",
+      "issueDate": "2026-10-25",
+      "certificateHash": "0xc6faa198eddf8fb30d94461b8eeb257b626fb984e8e3b03ceee3312853527016",
+      "status": "Verified Authentic"
+    },
+    {
+      "certificateId": "CERT-2025-EE-1002",
+      "studentName": "Priya Patel",
+      "studentId": "EE2022019",
+      "course": "B.Tech Electrical & Electronics Engineering",
+      "collegeName": "National Institute of Technology",
+      "issueDate": "2026-10-25",
+      "certificateHash": "0x8a9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
+      "status": "Verified Authentic"
+    },
+    {
+      "certificateId": "CERT-2025-CS-1003",
+      "studentName": "Amit Kumar",
+      "studentId": "CS2022088",
+      "course": "B.Tech Computer Science and Engineering",
+      "collegeName": "National Institute of Technology",
+      "issueDate": "2026-10-26",
+      "certificateHash": "0x9fc5785aad4f766394ad3aa3bac2aab98cea4af25ed4f2d7a6ed38530b706e92",
+      "status": "Verified Authentic"
+    }
+  ]
+}
