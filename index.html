@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockchain-Based Student Certificate Verification System</title>
+  <!-- Google Fonts: Inter & Playfair Display for academic feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand" onclick="switchTab('home')">
+        <div class="brand-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span class="chain-badge"><i class="fa-solid fa-link"></i></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CertiBlock</span>
+          <span class="brand-subtitle">Blockchain Certificate Verification</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-menu">
+        <button class="nav-link active" data-tab="home" onclick="switchTab('home')">
+          <i class="fa-solid fa-house"></i> Home
+        </button>
+        <button class="nav-link" data-tab="verify" onclick="switchTab('verify')">
+          <i class="fa-solid fa-shield-halved"></i> Verify Certificate
+        </button>
+        <button class="nav-link" data-tab="admin" onclick="switchTab('admin')">
+          <i class="fa-solid fa-file-circle-plus"></i> Issue Certificate
+        </button>
+        <button class="nav-link" data-tab="ledger" onclick="switchTab('ledger')">
+          <i class="fa-solid fa-table-list"></i> Admin Dashboard
+        </button>
+        <button class="nav-link" data-tab="guide" onclick="switchTab('guide')">
+          <i class="fa-solid fa-book-open"></i> Deployment Guide
+        </button>
+        <button class="nav-link" data-tab="about" onclick="switchTab('about')">
+          <i class="fa-solid fa-circle-info"></i> About
+        </button>
+      </nav>
+
+      <!-- Web3 Wallet & Settings Controls -->
+      <div class="nav-actions">
+        <button class="btn-config" onclick="openConfigModal()" title="Contract Settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <div id="walletPill" class="wallet-pill disconnected">
+          <span class="network-dot"></span>
+          <span id="networkName" class="network-text">Not Connected</span>
+          <button id="connectWalletBtn" class="btn-wallet" onclick="handleWalletConnection()">
+            <i class="fa-solid fa-wallet"></i> Connect MetaMask
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Hamburger Toggle -->
+      <button class="mobile-toggle" onclick="toggleMobileNav()">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Content Area -->
+  <main class="main-content">
+
+    <!-- ========================================== -->
+    <!-- 1. HOME TAB -->
+    <!-- ========================================== -->
+    <section id="tab-home" class="tab-pane active">
+      <!-- Hero Banner -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <div class="hero-pill">
+            <i class="fa-brands fa-ethereum"></i> Ethereum Smart Contract Powered
+          </div>
+          <h1 class="hero-title">
+            Tamper-Proof Academic Credentials on the <span class="highlight-text">Blockchain</span>
+          </h1>
+          <p class="hero-desc">
+            A decentralized, cryptographic verification system that empowers universities to register authentic degrees and allows employers and students to verify certificates in seconds without relying on slow manual paperwork.
+          </p>
+
+          <!-- Quick Verify Form on Home -->
+          <div class="quick-verify-box">
+            <div class="input-with-button">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="quickCertIdInput" placeholder="Enter Certificate ID (e.g., CERT-2025-CS-1001)" autocomplete="off">
+              <button class="btn-primary" onclick="quickVerifyCertificate()">
+                <i class="fa-solid fa-shield-check"></i> Verify Now
+              </button>
+            </div>
+            <div class="quick-actions-hint">
+              <span>Or drag & drop a certificate document in the <a href="javascript:void(0)" onclick="switchTab('verify')">Verification Portal</a></span>
+            </div>
+          </div>
+
+          <div class="hero-cta-buttons">
+            <button class="btn-secondary" onclick="switchTab('admin')">
+              <i class="fa-solid fa-certificate"></i> Issue Certificate (Admin)
+            </button>
+            <button class="btn-outline" onclick="switchTab('guide')">
+              <i class="fa-solid fa-rocket"></i> 2-Min Remix Guide
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="credential-card-floating">
+            <div class="cert-card-header">
+              <div class="university-seal"><i class="fa-solid fa-award"></i></div>
+              <div>
+                <h4>National Institute of Technology</h4>
+                <p>Bachelor of Technology</p>
+              </div>
+              <span class="status-verified-badge"><i class="fa-solid fa-circle-check"></i> Verified</span>
+            </div>
+            <div class="cert-card-body">
+              <p class="cert-recipient-label">Awarded to</p>
+              <h3 class="cert-recipient-name">Rahul Sharma</h3>
+              <p class="cert-course-name">Computer Science & Engineering</p>
+              <div class="cert-meta-row">
+                <div>
+                  <span class="meta-label">Certificate ID</span>
+                  <span class="meta-val">CERT-2025-CS-1001</span>
+                </div>
+                <div>
+                  <span class="meta-label">Blockchain Hash</span>
+                  <span class="meta-val hash-preview">0x7f83b1...81a</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Counters Bar -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-cube"></i></div>
+          <div class="stat-info">
+            <h3 id="statTotalCertificates">0</h3>
+            <p>Certificates on Chain</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="stat-info">
+            <h3 id="statVerificationsCount">100%</h3>
+            <p>Tamper Detection</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-fingerprint"></i></div>
+          <div class="stat-info">
+            <h3>SHA-256</h3>
+            <p>Cryptographic Hashing</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-network-wired"></i></div>
+          <div class="stat-info">
+            <h3 id="statActiveNetwork">Ready</h3>
+            <p>Smart Contract Status</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-Step Process Flow -->
+      <div class="workflow-section">
+        <h2 class="section-title">How The System Works</h2>
+        <p class="section-subtitle">Zero paper forgery. Zero manual phone calls. Complete cryptographic truth.</p>
+
+        <div class="workflow-grid">
+          <div class="workflow-card">
+            <div class="step-number">1</div>
+            <div class="workflow-icon"><i class="fa-solid fa-file-signature"></i></div>
+            <h3>College Issues Certificate</h3>
+            <p>Authorized college administrator inputs student details and uploads the digital certificate. A unique 256-bit cryptographic hash is computed.</p>
+          </div>
+
+          <div class="workflow-card">
+            <div class="step-number">2</div>
+            <div class="workflow-icon"><i class="fa-solid fa-cubes-stacked"></i></div>
+            <h3>Smart Contract Records Hash</h3>
+            <p>The certificate hash, ID, and verification metadata are stored permanently on the Ethereum blockchain. Data is immutable and cannot be tampered with.</p>
+          </div>
+
+          <div class="workflow-card">
+            <div class="step-number">3</div>
+            <div class="workflow-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h3>Instant Public Verification</h3>
+            <p>Anyone (employers, colleges, embassies) uploads the certificate or types the ID. The system matches the cryptographic hash directly against the blockchain.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. VERIFY CERTIFICATE TAB -->
+    <!-- ========================================== -->
+    <section id="tab-verify" class="tab-pane">
+      <div class="page-header">
+        <h2>Verify Academic Certificate</h2>
+        <p>Verify the authenticity and integrity of a student certificate registered on the blockchain ledger.</p>
+      </div>
+
+      <div class="verify-container">
+        <!-- Verification Modes Selector Tabs -->
+        <div class="subtabs-bar">
+          <button class="subtab-btn active" id="btnModeId" onclick="switchVerifyMode('id')">
+            <i class="fa-solid fa-id-card"></i> Verify by Certificate ID
+          </button>
+          <button class="subtab-btn" id="btnModeFile" onclick="switchVerifyMode('file')">
+            <i class="fa-solid fa-file-arrow-up"></i> Verify by Certificate File (Tamper Check)
+          </button>
+        </div>
+
+        <!-- Mode A: Verify by ID -->
+        <div id="modeVerifyId" class="verify-mode-card">
+          <div class="form-group">
+            <label for="verifyCertIdInput">Enter Certificate Identifier</label>
+            <div class="input-with-button">
+              <i class="fa-solid fa-barcode search-icon"></i>
+              <input type="text" id="verifyCertIdInput" placeholder="e.g. CERT-2025-CS-1001" autocomplete="off">
+              <button class="btn-primary" id="btnSearchById" onclick="performVerificationById()">
+                <i class="fa-solid fa-magnifying-glass"></i> Verify on Chain
+              </button>
+            </div>
+            <span class="field-hint">
+              Registered Demo IDs (click to fill): 
+              <code onclick="fillCertId('CERT-2025-CS-1001')" style="cursor:pointer; background:#e0e7ff; padding:2px 6px; border-radius:4px;" title="Click to fill">CERT-2025-CS-1001</code> 
+              <code onclick="fillCertId('CERT-2025-EE-1002')" style="cursor:pointer; background:#e0e7ff; padding:2px 6px; border-radius:4px;" title="Click to fill">CERT-2025-EE-1002</code> 
+              <code onclick="fillCertId('CERT-2025-CS-1003')" style="cursor:pointer; background:#dcfce7; padding:2px 6px; border-radius:4px;" title="Click to fill">CERT-2025-CS-1003</code>
+            </span>
+          </div>
+        </div>
+
+        <!-- Mode B: Verify by File Upload -->
+        <div id="modeVerifyFile" class="verify-mode-card" style="display: none;">
+          <div class="file-dropzone" id="dropzoneVerify" onclick="document.getElementById('fileVerifyInput').click()">
+            <input type="file" id="fileVerifyInput" style="display: none;" onchange="handleFileVerificationSelect(this.files)">
+            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+            <h4>Upload or Drag & Drop Certificate File</h4>
+            <p>Supports PDF, PNG, JPG, or TXT documents. The browser calculates the SHA-256 hash locally.</p>
+            <button type="button" class="btn-secondary btn-sm">Select Certificate File</button>
+          </div>
+
+          <div id="fileHashPreviewBox" class="file-hash-preview" style="display: none;">
+            <div class="preview-row">
+              <span class="file-name" id="uploadedFileName">document.pdf</span>
+              <span class="file-size" id="uploadedFileSize">120 KB</span>
+            </div>
+            <div class="hash-display">
+              <span class="hash-tag">Calculated SHA-256 Hash:</span>
+              <code id="uploadedFileHash">0x000...</code>
+            </div>
+            <button class="btn-primary" onclick="performVerificationByFileHash()">
+              <i class="fa-solid fa-shield-halved"></i> Verify Document on Blockchain
+            </button>
+          </div>
+        </div>
+
+        <!-- Verification Loading State -->
+        <div id="verifyLoadingState" class="verify-loading" style="display: none;">
+          <div class="spinner"></div>
+          <h4>Querying Ethereum Blockchain...</h4>
+          <p>Checking immutable smart contract records for cryptographic match</p>
+        </div>
+
+        <!-- Verification Results Container -->
+        <div id="verifyResultContainer" class="verify-result-wrapper" style="display: none;">
+          
+          <!-- STATE 1: CERTIFICATE VERIFIED (SUCCESS) -->
+          <div id="resultVerified" class="result-card verified" style="display: none;">
+            <div class="result-header">
+              <div class="result-icon-badge"><i class="fa-solid fa-shield-check"></i></div>
+              <div class="result-header-text">
+                <h3>Certificate Authenticity Confirmed</h3>
+                <p>This certificate is genuine, active, and matches the smart contract record.</p>
+              </div>
+              <span class="badge-status-green"><i class="fa-solid fa-circle-check"></i> Official & Valid</span>
+            </div>
+
+            <div class="result-details-grid">
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-user-graduate"></i> Student Full Name</span>
+                <span class="detail-val" id="resStudentName">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-id-badge"></i> Student ID / Roll No</span>
+                <span class="detail-val" id="resStudentId">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-graduation-cap"></i> Degree / Program</span>
+                <span class="detail-val" id="resCourse">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-building-columns"></i> College / Institution</span>
+                <span class="detail-val" id="resCollege">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-calendar-check"></i> Issue Date</span>
+                <span class="detail-val" id="resIssueDate">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label"><i class="fa-solid fa-fingerprint"></i> Certificate Identifier</span>
+                <span class="detail-val" id="resCertId">-</span>
+              </div>
+              <div class="detail-item full-width">
+                <span class="detail-label"><i class="fa-solid fa-link"></i> On-Chain Cryptographic SHA-256 Hash</span>
+                <code class="hash-code-block" id="resCertHash">-</code>
+              </div>
+              <div class="detail-item full-width">
+                <span class="detail-label"><i class="fa-solid fa-wallet"></i> Authorized College Issuer Wallet</span>
+                <code class="hash-code-block" id="resIssuer">-</code>
+              </div>
+            </div>
+
+            <div class="result-footer">
+              <button class="btn-outline btn-sm" onclick="printVerificationReport()">
+                <i class="fa-solid fa-print"></i> Print Official Verification Report
+              </button>
+              <button class="btn-secondary btn-sm" onclick="resetVerification()">
+                <i class="fa-solid fa-rotate-left"></i> Verify Another Certificate
+              </button>
+            </div>
+          </div>
+
+          <!-- STATE 2: CERTIFICATE INVALID OR MODIFIED (TAMPERED) -->
+          <div id="resultTampered" class="result-card tampered" style="display: none;">
+            <div class="result-header">
+              <div class="result-icon-badge error"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="result-header-text">
+                <h3>Warning: Certificate Invalid or Modified</h3>
+                <p>The cryptographic hash of the submitted document does not match the blockchain ledger.</p>
+              </div>
+              <span class="badge-status-red"><i class="fa-solid fa-ban"></i> Hash Mismatch</span>
+            </div>
+            <div class="tamper-explanation">
+              <p><strong>What this means:</strong></p>
+              <ul>
+                <li>The content, grade, student name, or date in this document has been altered after issuance.</li>
+                <li>Blockchain security ensures that even modifying a single comma or letter alters the entire SHA-256 hash.</li>
+                <li><strong>Recommendation:</strong> Do NOT accept this credential as valid. Contact the issuing institution.</li>
+              </ul>
+            </div>
+            <div class="result-footer">
+              <button class="btn-secondary btn-sm" onclick="resetVerification()">
+                <i class="fa-solid fa-arrow-left"></i> Try Again
+              </button>
+            </div>
+          </div>
+
+          <!-- STATE 3: CERTIFICATE NOT FOUND -->
+          <div id="resultNotFound" class="result-card notfound" style="display: none;">
+            <div class="result-header">
+              <div class="result-icon-badge warning"><i class="fa-solid fa-file-circle-question"></i></div>
+              <div class="result-header-text">
+                <h3>Certificate Not Found on Blockchain</h3>
+                <p>No registered certificate was found matching the provided identifier or cryptographic hash.</p>
+              </div>
+              <span class="badge-status-amber"><i class="fa-solid fa-circle-xmark"></i> Unregistered</span>
+            </div>
+            <div class="tamper-explanation">
+              <p>Please double-check the Certificate ID for typographical errors, or verify that the issuing college has completed the blockchain transaction.</p>
+            </div>
+            <div class="result-footer">
+              <button class="btn-secondary btn-sm" onclick="resetVerification()">
+                <i class="fa-solid fa-arrow-left"></i> Search Again
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. ISSUE CERTIFICATE TAB (ADMIN PORTAL) -->
+    <!-- ========================================== -->
+    <section id="tab-admin" class="tab-pane">
+      <div class="page-header">
+        <h2>Issue & Register Student Certificate</h2>
+        <p>Authorized college portal to generate unique credentials and anchor their cryptographic hashes to the blockchain.</p>
+      </div>
+
+      <!-- Admin Wallet Status Card -->
+      <div id="adminAuthBanner" class="admin-auth-card warning">
+        <i class="fa-solid fa-circle-exclamation auth-icon"></i>
+        <div class="auth-text">
+          <h4 id="adminAuthTitle">MetaMask Wallet Required for Issuance</h4>
+          <p id="adminAuthDesc">Connect your authorized college admin wallet via MetaMask to sign the blockchain transaction.</p>
+        </div>
+        <button class="btn-primary btn-sm" onclick="handleWalletConnection()">
+          <i class="fa-solid fa-wallet"></i> Connect Wallet
+        </button>
+      </div>
+
+      <div class="issue-layout-grid">
+        <!-- Form Side -->
+        <div class="issue-form-panel">
+          <form id="issueCertForm" onsubmit="handleIssueCertificate(event)">
+            
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="studentName"><i class="fa-solid fa-user"></i> Student Full Name *</label>
+                <input type="text" id="studentName" placeholder="e.g. Rahul Sharma" required oninput="updateLivePreview()">
+              </div>
+              <div class="form-group">
+                <label for="studentId"><i class="fa-solid fa-id-card"></i> Student ID / Roll Number *</label>
+                <input type="text" id="studentId" placeholder="e.g. CS2022045" required oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="courseName"><i class="fa-solid fa-graduation-cap"></i> Degree / Course Name *</label>
+                <input type="text" id="courseName" placeholder="e.g. B.Tech Computer Science and Engineering" required oninput="updateLivePreview()">
+              </div>
+              <div class="form-group">
+                <label for="collegeName"><i class="fa-solid fa-building-columns"></i> College / University Name *</label>
+                <input type="text" id="collegeName" value="National Institute of Technology" required oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="issueDate"><i class="fa-solid fa-calendar-day"></i> Issue Date *</label>
+                <input type="date" id="issueDate" required oninput="updateLivePreview()">
+              </div>
+              <div class="form-group">
+                <label for="certId">
+                  <i class="fa-solid fa-barcode"></i> Unique Certificate ID *
+                  <button type="button" class="btn-link" onclick="autoGenerateCertId()">Auto-Generate</button>
+                </label>
+                <input type="text" id="certId" placeholder="e.g. CERT-2025-CS-1001" required oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <!-- Optional Document File Upload -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-file-pdf"></i> Certificate Document (Optional PDF / File)</label>
+              <div class="mini-dropzone" onclick="document.getElementById('issueDocInput').click()">
+                <input type="file" id="issueDocInput" style="display:none;" onchange="handleIssueDocumentSelect(this.files)">
+                <i class="fa-solid fa-paperclip"></i>
+                <span id="issueDocLabel">Attach Certificate PDF/Image to hash file directly, or leave empty to hash certificate metadata</span>
+              </div>
+            </div>
+
+            <!-- Real-Time Computed Hash Display -->
+            <div class="hash-calculation-box">
+              <div class="hash-box-header">
+                <span><i class="fa-solid fa-fingerprint"></i> Cryptographic SHA-256 Digest (Calculated Client-Side):</span>
+                <span class="badge-tag">Zero Private Data Exposed</span>
+              </div>
+              <code id="calculatedCertHash" class="hash-preview-text">Computing hash...</code>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+              <button type="submit" id="btnSubmitCert" class="btn-primary btn-lg">
+                <i class="fa-solid fa-cube"></i> Register & Issue on Blockchain
+              </button>
+              <button type="button" class="btn-secondary" onclick="resetIssueForm()">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Clear Form
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Transaction Status Feedback Box -->
+          <div id="txStatusBox" class="tx-status-card" style="display: none;">
+            <div class="tx-status-indicator">
+              <div id="txSpinner" class="spinner-small"></div>
+              <i id="txSuccessIcon" class="fa-solid fa-circle-check tx-icon-success" style="display: none;"></i>
+              <i id="txErrorIcon" class="fa-solid fa-circle-xmark tx-icon-error" style="display: none;"></i>
+              <div class="tx-status-info">
+                <h4 id="txStatusTitle">Submitting Transaction to Blockchain...</h4>
+                <p id="txStatusMessage">Please confirm the transaction prompt in your MetaMask wallet.</p>
+              </div>
+            </div>
+            <div id="txHashRow" class="tx-hash-row" style="display: none;">
+              <span>Transaction Hash:</span>
+              <a id="txHashLink" href="#" target="_blank" class="tx-hash-link">0x00...</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Digital Certificate Preview Side -->
+        <div class="issue-preview-panel">
+          <div class="preview-title-bar">
+            <h4><i class="fa-solid fa-eye"></i> Live Certificate Preview</h4>
+            <button class="btn-sm btn-outline" onclick="printCertificateCard()">
+              <i class="fa-solid fa-print"></i> Print Certificate
+            </button>
+          </div>
+
+          <!-- Printable Academic Diploma Card -->
+          <div id="printableCertificate" class="diploma-card">
+            <div class="diploma-border">
+              <div class="diploma-header">
+                <div class="diploma-crest"><i class="fa-solid fa-award"></i></div>
+                <h2 id="prevCollegeName">National Institute of Technology</h2>
+                <p class="diploma-sub">Department of Higher Education & Research</p>
+                <div class="diploma-divider"></div>
+              </div>
+
+              <div class="diploma-body">
+                <p class="diploma-intro">This is to certify that</p>
+                <h1 id="prevStudentName" class="diploma-name">Student Full Name</h1>
+                <p class="diploma-id-text">Roll / Student ID: <strong id="prevStudentId">CS2022045</strong></p>
+                <p class="diploma-text">has successfully fulfilled the requirements for the award of the degree of</p>
+                <h3 id="prevCourseName" class="diploma-course">Bachelor of Technology</h3>
+                <p class="diploma-date-text">Issued on: <span id="prevIssueDate">October 25, 2026</span></p>
+              </div>
+
+              <div class="diploma-footer">
+                <div class="diploma-signature">
+                  <div class="sig-line"></div>
+                  <p>Dean of Academic Affairs</p>
+                </div>
+                <div class="diploma-qr-box">
+                  <div id="certQrCode"></div>
+                  <span class="qr-label">Scan to Verify</span>
+                </div>
+                <div class="diploma-signature">
+                  <div class="sig-line"></div>
+                  <p>Controller of Examinations</p>
+                </div>
+              </div>
+
+              <div class="diploma-meta-footer">
+                <span>Cert ID: <strong id="prevCertId">CERT-2025-CS-1001</strong></span>
+                <span>•</span>
+                <span>Blockchain Verified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. ADMIN DASHBOARD & LEDGER TAB -->
+    <!-- ========================================== -->
+    <section id="tab-ledger" class="tab-pane">
+      <div class="page-header">
+        <h2>Admin Dashboard & Registry Ledger</h2>
+        <p>Monitor smart contract metrics, recent issued certificates, and manage authorized college issuers.</p>
+      </div>
+
+      <div class="ledger-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="stat-info">
+            <h3 id="ledgerTotalCertificates">0</h3>
+            <p>Total Registered Certificates</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+          <div class="stat-info">
+            <h3 id="ledgerIssuerStatus">Unknown</h3>
+            <p>Your Admin Role</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-code-commit"></i></div>
+          <div class="stat-info">
+            <h3 id="ledgerContractShortAddr">0x00...</h3>
+            <p>Smart Contract Address</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certificate Ledger Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3><i class="fa-solid fa-list-check"></i> Issued Certificates Ledger</h3>
+          <button class="btn-sm btn-secondary" onclick="loadIssuedCertificatesLedger()">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Ledger
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="ledger-table" id="ledgerTable">
+            <thead>
+              <tr>
+                <th>Certificate ID</th>
+                <th>Student Name</th>
+                <th>Roll No</th>
+                <th>Course</th>
+                <th>Issue Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="fa-solid fa-inbox"></i> No certificates loaded yet. Click "Refresh Ledger" or issue a certificate.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. DEPLOYMENT & REMIX GUIDE TAB -->
+    <!-- ========================================== -->
+    <section id="tab-guide" class="tab-pane">
+      <div class="page-header">
+        <h2>5-Minute Remix IDE & Smart Contract Deployment Guide</h2>
+        <p>Step-by-step instructions designed for college students and beginners to deploy the Solidity contract.</p>
+      </div>
+
+      <div class="guide-steps-container">
+        <!-- Step 1 -->
+        <div class="guide-card">
+          <div class="guide-badge">Step 1</div>
+          <div class="guide-body">
+            <h3>Open Remix IDE & Add Smart Contract</h3>
+            <p>1. Go to <a href="https://remix.ethereum.org" target="_blank" rel="noopener">remix.ethereum.org</a> in your browser.</p>
+            <p>2. In the <strong>File Explorer</strong> on the left, create a new file named <code>CertificateVerification.sol</code> inside the <code>contracts/</code> folder.</p>
+            <p>3. Copy the contract code below or view it in <a href="/contracts/CertificateVerification.sol" target="_blank">contracts/CertificateVerification.sol</a>:</p>
+            <div class="code-copy-box">
+              <button class="btn-sm btn-outline copy-btn" onclick="copyContractSource()">
+                <i class="fa-solid fa-copy"></i> Copy Solidity Code
+              </button>
+              <textarea id="contractSourceCode" readonly rows="6" class="code-snippet-box">// Loading contract source code...</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="guide-card">
+          <div class="guide-badge">Step 2</div>
+          <div class="guide-body">
+            <h3>Compile the Smart Contract</h3>
+            <p>1. Click on the <strong>Solidity Compiler</strong> tab (the "S" icon) on the left sidebar in Remix.</p>
+            <p>2. Select compiler version <code>0.8.20</code> or higher.</p>
+            <p>3. Click the blue button: <strong>"Compile CertificateVerification.sol"</strong>.</p>
+            <p>4. You should see a green checkmark indicating successful compilation with zero errors.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="guide-card">
+          <div class="guide-badge">Step 3</div>
+          <div class="guide-body">
+            <h3>Deploy using MetaMask (Sepolia / Localhost)</h3>
+            <p>1. Click on the <strong>Deploy & Run Transactions</strong> tab (the Ethereum icon with arrow).</p>
+            <p>2. Under <strong>ENVIRONMENT</strong>, select:</p>
+            <ul>
+              <li><strong>"Injected Provider - MetaMask"</strong> (if deploying to Sepolia Testnet or local Ganache/Anvil).</li>
+              <li>Or <strong>"Remix VM (Prague/Cancun)"</strong> for instant in-browser test blockchain.</li>
+            </ul>
+            <p>3. Ensure <strong>CertificateVerification</strong> is selected in the Contract dropdown.</p>
+            <p>4. Click the orange <strong>"Deploy"</strong> button. Confirm the transaction in MetaMask.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="guide-card">
+          <div class="guide-badge">Step 4</div>
+          <div class="guide-body">
+            <h3>Connect Deployed Address to this Web App</h3>
+            <p>1. Under "Deployed Contracts" in Remix, click the copy icon next to your newly deployed contract address.</p>
+            <p>2. Click the button below to paste your contract address right into this web application:</p>
+            <div class="quick-config-row">
+              <input type="text" id="guideContractAddressInput" placeholder="Paste 0x... address here">
+              <button class="btn-primary" onclick="saveContractAddressFromGuide()">
+                <i class="fa-solid fa-floppy-disk"></i> Save & Connect
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. ABOUT PROJECT TAB -->
+    <!-- ========================================== -->
+    <section id="tab-about" class="tab-pane">
+      <div class="page-header">
+        <h2>About This Project</h2>
+        <p>A B.Tech Computer Science & Engineering Final/Mini Project on Decentralized Identity & Verification.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <h3>The Problem of Fake Certificates</h3>
+          <p>Over 20% of resumes and paper degrees submitted in competitive job markets contain forged marks, fake degrees, or doctored timestamps. Traditional verification requires tedious phone calls, physical postal mail, or expensive third-party background verification agencies that take weeks.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon"><i class="fa-solid fa-lock"></i></div>
+          <h3>Why Blockchain is the Solution</h3>
+          <p>Blockchain provides an immutable, decentralized, and append-only ledger. Once an authorized college administrator records a certificate hash on-chain, it cannot be edited, deleted, or forged by any unauthorized actor—not even server administrators.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon"><i class="fa-solid fa-user-shield"></i></div>
+          <h3>Student Privacy by Design</h3>
+          <p>Sensitive student personal identification documents are never stored directly on the public blockchain. Instead, only a 32-byte cryptographic SHA-256 digest is stored. The original document remains private with the student while remaining 100% mathematically verifiable.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon"><i class="fa-solid fa-code"></i></div>
+          <h3>Technology Stack</h3>
+          <ul class="tech-stack-list">
+            <li><strong>Frontend:</strong> HTML5, Responsive CSS3, JavaScript (ES6+)</li>
+            <li><strong>Web3 Library:</strong> Ethers.js v5.7</li>
+            <li><strong>Smart Contract:</strong> Solidity 0.8.20</li>
+            <li><strong>Development Environment:</strong> Remix IDE & Node.js Express</li>
+            <li><strong>Wallet:</strong> MetaMask Web3 Browser Extension</li>
+            <li><strong>Hashing Algorithm:</strong> Client-Side SHA-256 (Web Crypto API)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Contract Settings Modal -->
+  <div id="configModal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear"></i> Smart Contract Configuration</h3>
+        <button class="modal-close" onclick="closeConfigModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="configContractAddr">Deployed Contract Address</label>
+          <input type="text" id="configContractAddr" placeholder="0x..." autocomplete="off">
+          <span class="field-hint">Paste the address of your deployed contract from Remix or local node.</span>
+        </div>
+        <div class="form-group">
+          <label>Demo / Sample Mode</label>
+          <p class="field-hint">If you don't have a live blockchain or MetaMask right now, you can toggle Local Demo Mode to test all verification features with preloaded sample certificates.</p>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleDemoMode" onchange="handleDemoModeToggle(this.checked)">
+            <span class="slider"></span>
+            <span class="toggle-label" id="demoModeLabelText">Local Demo Mode: Enabled</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="saveConfigSettings()">Save Settings</button>
+        <button class="btn-secondary" onclick="closeConfigModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <p><strong>Blockchain-Based Student Certificate Verification System</strong></p>
+        <p class="copyright">B.Tech Computer Science Project • Decentralized Credential Security</p>
+      </div>
+      <div class="footer-right">
+        <span class="node-status"><i class="fa-solid fa-circle"></i> Web3 Active</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- External Web3 Libraries (Ethers.js v5 & QRCode.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Application Configuration & Main Script (Versioned to bypass cache) -->
+  <script src="contract-config.js?v=2.1"></script>
+  <script src="script.js?v=2.1"></script>
+</body>
+</html>
